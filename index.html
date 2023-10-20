@@ -27,7 +27,9 @@ button, select {
     <div id="tableContainer"></div>
     
     <script>
-// Function to load Google Sheets API
+let spreadsheetId;
+let sheetId;
+
 function loadSheetsAPI() {
     gapi.load('client', initSheetsAPI);
 }
@@ -38,51 +40,85 @@ function initSheetsAPI() {
         discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
     }).then(function () {
         // API is initialized, you can now use gapi.client.sheets
-        // Fetch a list of spreadsheets from the user's account
-        gapi.client.sheets.spreadsheets.get({
-            includeGridData: false, // Exclude grid data to get a list of spreadsheets
-        }).then(function (response) {
-            const spreadsheets = response.result.files;
-            const sheetSelector = document.getElementById('sheetSelector');
-            const spreadsheetSelector = document.getElementById('spreadsheetSelector');
 
-            spreadsheets.forEach((spreadsheet, index) => {
-                const option = document.createElement('option');
-                option.value = spreadsheet.id;
-                option.text = spreadsheet.name;
-                spreadsheetSelector.appendChild(option);
+        // Fetch a list of spreadsheets and populate the dropdown
+        gapi.client.sheets.spreadsheets
+            .list()
+            .then(function (response) {
+                const spreadsheets = response.result.files;
+                const spreadsheetSelector = document.getElementById('spreadsheetSelector');
+                spreadsheetSelector.style.display = 'block';
+
+                spreadsheets.forEach((spreadsheet) => {
+                    const option = document.createElement('option');
+                    option.value = spreadsheet.id;
+                    option.text = spreadsheet.name;
+                    spreadsheetSelector.appendChild(option);
+                });
+
+                // Event listener for spreadsheet selection
+                spreadsheetSelector.addEventListener('change', displaySpreadsheet);
             });
-
-            // Event listener for the spreadsheet selection
-            spreadsheetSelector.addEventListener('change', loadSheetsFromSpreadsheet);
-        });
     });
 }
 
-function loadSheetsFromSpreadsheet() {
-    const spreadsheetId = document.getElementById('spreadsheetSelector').value;
+function displaySpreadsheet() {
+    spreadsheetId = document.getElementById('spreadsheetSelector').value; // Get the selected spreadsheet ID
+    sheetId = null; // Reset the sheet ID
 
-    // Fetch sheet names from the selected spreadsheet and populate the second dropdown
+    // Fetch data from the selected spreadsheet and populate the sheet dropdown
     gapi.client.sheets.spreadsheets.get({
         spreadsheetId: spreadsheetId,
     }).then(function (response) {
         const sheets = response.result.sheets;
         const sheetSelector = document.getElementById('sheetSelector');
-
-        // Clear the existing options
+        sheetSelector.style.display = 'block';
         sheetSelector.innerHTML = '';
 
-        sheets.forEach((sheet, index) => {
+        sheets.forEach((sheet) => {
             const option = document.createElement('option');
             option.value = sheet.properties.title;
             option.text = sheet.properties.title;
             sheetSelector.appendChild(option);
         });
+
+        // Event listener for sheet selection
+        sheetSelector.addEventListener('change', displaySelectedSheet);
     });
 }
 
-// Load the Google Sheets API when the button is clicked
-document.getElementById('connectButton').addEventListener('click', loadSheetsAPI);
+function displaySelectedSheet() {
+    sheetId = document.getElementById('sheetSelector').value; // Get the selected sheet name
+
+    // Fetch data from the selected sheet and populate the editable table
+    gapi.client.sheets.spreadsheets.values.get({
+        spreadsheetId: spreadsheetId,
+        range: sheetId + '!A1:Z100', // Adjust the range as needed
+    }).then(function (response) {
+        const values = response.result.values;
+
+        // Create an editable table and populate it with the data
+        const tableContainer = document.getElementById('tableContainer');
+        const table = document.createElement('table');
+
+        values.forEach((row) => {
+            const tr = document.createElement('tr');
+            row.forEach((cell) => {
+                const td = document.createElement('td');
+                td.contentEditable = true;
+                td.textContent = cell;
+                tr.appendChild(td);
+            });
+            table.appendChild(tr);
+        });
+
+        tableContainer.innerHTML = '';
+        tableContainer.appendChild(table);
+    });
+}
+
+// Automatically load spreadsheets and sheets when the page loads
+window.addEventListener('load', loadSheetsAPI);
 
     </script>
 </body>
