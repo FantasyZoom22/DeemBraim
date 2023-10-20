@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+  body {
+    text-align: center;
+}
+
+button, select {
+    margin: 10px;
+}
+
+#tableContainer {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+}
+
+  </style>
+</head>
+<body>
+    <button id="connectButton">Connect to Google Sheets</button>
+    <select id="spreadsheetSelector"></select>
+        <select id="sheetSelector"></select>
+    <div id="tableContainer"></div>
+    
+    <script>
+// Function to load Google Sheets API
+function loadSheetsAPI() {
+    gapi.load('client', initSheetsAPI);
+}
+
+function initSheetsAPI() {
+    gapi.client.init({
+        apiKey: 'AIzaSyAYsVQoSUpYDulbshcq7sqJXgCpMvYb4nM',
+        discoveryDocs: ['https://sheets.googleapis.com/$discovery/rest?version=v4'],
+    }).then(function () {
+        // API is initialized, you can now use gapi.client.sheets
+        // Fetch a list of spreadsheets from the user's account
+        gapi.client.sheets.spreadsheets.get({
+            includeGridData: false, // Exclude grid data to get a list of spreadsheets
+        }).then(function (response) {
+            const spreadsheets = response.result.files;
+            const sheetSelector = document.getElementById('sheetSelector');
+            const spreadsheetSelector = document.getElementById('spreadsheetSelector');
+
+            spreadsheets.forEach((spreadsheet, index) => {
+                const option = document.createElement('option');
+                option.value = spreadsheet.id;
+                option.text = spreadsheet.name;
+                spreadsheetSelector.appendChild(option);
+            });
+
+            // Event listener for the spreadsheet selection
+            spreadsheetSelector.addEventListener('change', loadSheetsFromSpreadsheet);
+        });
+    });
+}
+
+function loadSheetsFromSpreadsheet() {
+    const spreadsheetId = document.getElementById('spreadsheetSelector').value;
+
+    // Fetch sheet names from the selected spreadsheet and populate the second dropdown
+    gapi.client.sheets.spreadsheets.get({
+        spreadsheetId: spreadsheetId,
+    }).then(function (response) {
+        const sheets = response.result.sheets;
+        const sheetSelector = document.getElementById('sheetSelector');
+
+        // Clear the existing options
+        sheetSelector.innerHTML = '';
+
+        sheets.forEach((sheet, index) => {
+            const option = document.createElement('option');
+            option.value = sheet.properties.title;
+            option.text = sheet.properties.title;
+            sheetSelector.appendChild(option);
+        });
+    });
+}
+
+// Load the Google Sheets API when the button is clicked
+document.getElementById('connectButton').addEventListener('click', loadSheetsAPI);
+
+    </script>
+</body>
+</html>
