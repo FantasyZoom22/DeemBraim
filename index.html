@@ -3,92 +3,6 @@
 <html>
 <head>
     <title>Deem2Braim</title>
-<script src="https://apis.google.com/js/api.js" onload="handleClientLoad()" onerror="handleClientLoad()"></script>
-
-  <style>
- /* General Styles */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 20px;
-}
-
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-/* Buttons */
-button {
-    padding: 10px 20px;
-    background-color: #007BFF;
-    color: #fff;
-    border: none;
-    cursor: pointer;
-}
-
-/* Dropdowns */
-select {
-    padding: 5px;
-    width: 100%;
-}
-
-/* Table Styles */
-table {
-    border-collapse: collapse;
-    width: 100%;
-}
-
-table, th, td {
-    border: 1px solid #333;
-}
-
-th, td {
-    padding: 10px;
-    text-align: left;
-}
-
-th {
-    background-color: #333;
-    color: #fff;
-}
-
-/* Hide elements initially */
-#spreadsheet-selector, #sheet-selector, #data-table {
-    display: none;
-}
-
-  </style>
-</head>
-<body>
-    <h1>OAuth with Google Sheets</h1>
-
-    <div>
-        <h2>Step 1: Connect to Google Sheets</h2>
-        <button id="authorize-button">Connect with Google</button>
-    </div>
-
-    <div id="spreadsheet-selector" style="display: none;">
-        <h2>Step 2: Select a Spreadsheet</h2>
-        <select id="spreadsheet-dropdown">
-            <!-- Populate spreadsheet options here -->
-        </select>
-    </div>
-
-    <div id="sheet-selector" style="display: none;">
-        <h2>Step 3: Select a Sheet</h2>
-        <select id="sheet-dropdown">
-            <!-- Populate sheet options here -->
-        </select>
-    </div>
-
-    <div id="data-table" style="display: none;">
-        <h2>Spreadsheet Data</h2>
-        <table id="editable-table">
-            <!-- Populate table data here -->
-        </table>
-    </div>
-
     <script>
 
         // Add your OAuth client ID here
@@ -185,6 +99,91 @@ function displaySheetData() {
 }
 
     </script>
+<script src="https://apis.google.com/js/api.js" onload="handleClientLoad()" onerror="handleClientLoad()"></script>
+
+  <style>
+ /* General Styles */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
+}
+
+/* Buttons */
+button {
+    padding: 10px 20px;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+/* Dropdowns */
+select {
+    padding: 5px;
+    width: 100%;
+}
+
+/* Table Styles */
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+table, th, td {
+    border: 1px solid #333;
+}
+
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+
+th {
+    background-color: #333;
+    color: #fff;
+}
+
+/* Hide elements initially */
+#spreadsheet-selector, #sheet-selector, #data-table {
+    display: none;
+}
+
+  </style>
+</head>
+<body>
+    <h1>OAuth with Google Sheets</h1>
+
+    <div>
+        <h2>Step 1: Connect to Google Sheets</h2>
+        <button id="authorize-button">Connect with Google</button>
+    </div>
+
+    <div id="spreadsheet-selector" style="display: none;">
+        <h2>Step 2: Select a Spreadsheet</h2>
+        <select id="spreadsheet-dropdown">
+            <!-- Populate spreadsheet options here -->
+        </select>
+    </div>
+
+    <div id="sheet-selector" style="display: none;">
+        <h2>Step 3: Select a Sheet</h2>
+        <select id="sheet-dropdown">
+            <!-- Populate sheet options here -->
+        </select>
+    </div>
+
+    <div id="data-table" style="display: none;">
+        <h2>Spreadsheet Data</h2>
+        <table id="editable-table">
+            <!-- Populate table data here -->
+        </table>
+    </div>
 </body>
 </html>
 
